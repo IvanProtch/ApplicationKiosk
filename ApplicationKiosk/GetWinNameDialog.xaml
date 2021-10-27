@@ -1,0 +1,17 @@
+﻿<Window x:Class="ApplicationKiosk.GetWinNameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ApplicationKiosk"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        Title="Найти окно приложения" Height="139.13" Width="352.642">
+    <Grid>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="Частичное или полное название окна" VerticalAlignment="Top" Width="308"/>
+        <Button x:Name="okButton" Content="Найти" Click="okButton_Click" HorizontalAlignment="Left" Margin="242,67,0,0" VerticalAlignment="Top" Width="76"/>
+
+    </Grid>
+</Window>

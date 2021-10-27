@@ -1,0 +1,19 @@
+﻿<Window x:Class="ApplicationKiosk.AreaCustomizationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ApplicationKiosk"
+        mc:Ignorable="d"
+        Opacity="0.5"
+        Background="AntiqueWhite"
+        MouseLeftButtonDown="Window_MouseLeftButtonDown"
+        Title="AreaCustomizationWindow" Height="450" Width="800" BorderBrush="Red" BorderThickness="5" WindowStyle ="None">
+
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Name="accept" Header="Принять" Click="accept_Click"/>
+            <MenuItem Name="cancel" Header="Отмена" Click="cancel_Click"/>
+        </ContextMenu>
+    </Window.ContextMenu>
+</Window>

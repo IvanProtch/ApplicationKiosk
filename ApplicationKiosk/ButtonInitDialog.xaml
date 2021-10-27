@@ -1,0 +1,19 @@
+﻿<Window x:Class="ApplicationKiosk.ButtonInitDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ApplicationKiosk"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="ToolWindow"
+        Title="Добавить новую кнопку" Height="107.834" Width="423.058">
+    <Grid>
+        <Button x:Name="addButton" Content="Добавить" HorizontalAlignment="Left" Margin="257,41,0,0" VerticalAlignment="Top" Width="65" Click="addButton_Click"/>
+        <Button x:Name="cancelButton" Content="Отмена" HorizontalAlignment="Left" Margin="327,41,0,0" VerticalAlignment="Top" Width="65" Click="cancelButton_Click"/>
+        <TextBox x:Name="nameTextBox" HorizontalAlignment="Left" Height="23" Margin="5,4,0,0" TextWrapping="Wrap" Text="Имя процесса или URL-адрес страницы" VerticalAlignment="Top" Width="224"/>
+        <TextBox x:Name="captionTextBox" HorizontalAlignment="Left" Height="23" Margin="242,4,0,0" TextWrapping="Wrap" Text="Заголовок кнопки" VerticalAlignment="Top" Width="150"/>
+
+    </Grid>
+</Window>

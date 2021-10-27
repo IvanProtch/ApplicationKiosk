@@ -1,0 +1,42 @@
+﻿<Window x:Class="ApplicationKiosk.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Kiosk" Width="300" AllowDrop="False" FontSize="15" WindowStyle="None">
+
+
+    <StackPanel>
+        <DockPanel x:Name="dockPanel2" Height="150">
+            <Image Source="/logo.png" Width="211" />
+        </DockPanel>
+        <!--<DockPanel x:Name="dockPanel" Height="20">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="Файл" Width="45">
+                    <MenuItem Header="Настройки" HorizontalAlignment="Left" Width="144">
+                        <MenuItem Name="addButton" Header="Добавить кнопку" Click="addButton_Click" ></MenuItem>
+                        <Separator />
+                        <MenuItem Header="Определить размер открываемого окна" Margin="0,0,-45,0" Click="MenuItem_winSizeChanged_Click"></MenuItem>
+                    </MenuItem>
+                    <Separator />
+                </MenuItem>
+            </Menu>
+        </DockPanel>-->
+        <StackPanel x:Name="button_stack" Height="auto">
+            <StackPanel.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Name="removeButton" Header="Удалить кнопку" Click="removeButton_Click"></MenuItem>
+                    <MenuItem Name="saveButton" Header="Сохранить конфигурацию" Click="saveButton_Click"></MenuItem>
+                </ContextMenu>
+            </StackPanel.ContextMenu>
+        </StackPanel>
+    </StackPanel>
+    
+    <Window.ContextMenu>
+        <ContextMenu>
+            <MenuItem Name="addButton" Header="Добавить кнопку" Click="addButton_Click" ></MenuItem>
+        </ContextMenu>
+    </Window.ContextMenu>
+    
+</Window>
