@@ -119,7 +119,7 @@ namespace ApplicationKiosk
 
             _exeFilePath = _process.StartInfo.FileName;
             _processName = processName;
-            _mainWindowHandle = _process.MainWindowTitle;
+            _mainWindowHandle = _process.MainWindowTitle == null ? "" : _process.MainWindowTitle;
 
             this.SpecificName = processName + _process.MainWindowTitle;
         }
