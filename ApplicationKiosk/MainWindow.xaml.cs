@@ -29,7 +29,7 @@ namespace ApplicationKiosk
         protected IntPtr intPtr;
         public KioskButton()
         {
-            this.FontSize = 25;
+            this.FontSize = 35;
             this.FontWeight = FontWeights.DemiBold;
             this.Foreground = Brushes.DarkBlue;
             this.Background = Brushes.GhostWhite;
@@ -68,6 +68,15 @@ namespace ApplicationKiosk
             MoveWindow(hwnd, (int)this.ActualWidth, 0, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width - (int)this.ActualWidth, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height, true);
             BringWindowToTop(hwnd);
             //SetWindowPos(hwnd, FindWindow(null, this.Name), (int)this.ActualWidth, 0, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width - (int)this.ActualWidth, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height, SWP_NOSENDCHANGING);
+        }
+
+        private void MinimizeWindow()
+        {
+            ShowWindow(intPtr, SW_SHOWMINIMIZED);
+        }
+        ~KioskButton()
+        {
+            this.MinimizeWindow();
         }
 
         public virtual XElement ToXElement() 
@@ -142,9 +151,9 @@ namespace ApplicationKiosk
 
             base.OnClick();
             bool exited = _process == null ? true : _process.HasExited;
-            if (!exited && _process != null)
+            if (!exited)
                 SetWindowPositionAndSelect(_process.MainWindowHandle);
-            else if (exited)
+            else
             {
                 try
                 {
@@ -156,11 +165,18 @@ namespace ApplicationKiosk
 
                     if(result == MessageBoxResult.Yes)
                     {
+                        int step = 0;
                         while (exited)
                         {
-                            Thread.Sleep(300);
+                            step++;
+                            Thread.Sleep(500);
                             _process = Process.GetProcessesByName(_processName).FirstOrDefault(e => e.MainWindowTitle.Contains(_mainWindowHandle));
                             exited = _process == null ? true : _process.HasExited;
+                            if(step == 50)
+                            {
+                                MessageBox.Show("Истекло время ожидания", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                break;
+                            }
                         }
                     }
                 }
@@ -238,9 +254,6 @@ namespace ApplicationKiosk
     /// </summary>
     public partial class MainWindow : Window
     {
-        const int WM_SYSCOMMAND = 0x0112;
-        const int SC_MOVE = 0xF010;
-
         public Rect WindowRect { get; set; }
 
         private List<KioskButton> _createdButtons = new List<KioskButton>();

@@ -6,8 +6,8 @@
         mc:Ignorable="d"
         Title="Kiosk" Width="300" AllowDrop="False" FontSize="15" WindowStyle="None">
 
-
-    <StackPanel>
+    <ScrollViewer VerticalScrollBarVisibility ="Auto" >
+            <StackPanel>
         <DockPanel x:Name="dockPanel2" Height="150">
             <Image Source="/logo.png" Width="211" />
         </DockPanel>
@@ -23,7 +23,8 @@
                 </MenuItem>
             </Menu>
         </DockPanel>-->
-        <StackPanel x:Name="button_stack" Height="auto">
+
+                    <StackPanel x:Name="button_stack" Height="auto">
             <StackPanel.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="removeButton" Header="Удалить кнопку" Click="removeButton_Click"></MenuItem>
@@ -32,6 +33,8 @@
             </StackPanel.ContextMenu>
         </StackPanel>
     </StackPanel>
+
+    </ScrollViewer>
     
     <Window.ContextMenu>
         <ContextMenu>
