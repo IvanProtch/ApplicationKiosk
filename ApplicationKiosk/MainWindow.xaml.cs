@@ -117,7 +117,7 @@ namespace ApplicationKiosk
 
             intPtr = _process.MainWindowHandle;
 
-            _exeFilePath = _process.StartInfo.FileName;
+            _exeFilePath = _process.StartInfo.FileName == null ? "" : _process.StartInfo.FileName;
             _processName = processName;
             _mainWindowHandle = _process.MainWindowTitle == null ? "" : _process.MainWindowTitle;
 
@@ -291,7 +291,7 @@ namespace ApplicationKiosk
                     //var rectParams = xElem.Attribute("rectParams").Value.Replace(';', ',');
                     var name = xElem.Attribute("processName") ?? xElem.Attribute("uri");
                     var caption = xElem.Attribute("caption");
-                    var winCaption = xElem.Attribute("mainWindowHandle");
+                    var winCaption = xElem.Attribute("mainWindowTitle");
                     var exePath = xElem.Attribute("exePath");
 
                     Uri adress = null;
