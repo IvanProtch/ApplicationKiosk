@@ -26,12 +26,9 @@ namespace ApplicationKiosk
     public class KioskButton : Button
     {
         public string SpecificName;
-        private List<KioskButton> _kioskButtons;
-
         protected IntPtr intPtr;
-        public KioskButton(List<KioskButton> kioskButtons)
+        public KioskButton()
         {
-            _kioskButtons = kioskButtons;
             this.FontSize = 25;
             this.FontWeight = FontWeights.DemiBold;
             this.Foreground = Brushes.DarkBlue;
@@ -46,6 +43,7 @@ namespace ApplicationKiosk
 
         const int SW_SHOWMINIMIZED = 2;
         const int SW_SHOWMAXIMIZED = 3;
+        const int SW_NORMAL = 1;
         [DllImport("user32.dll")]
         static extern bool ShowWindow(IntPtr hwnd, int intnCmdShow);
 
@@ -61,18 +59,15 @@ namespace ApplicationKiosk
         [DllImport("user32.dll", SetLastError = true)]
         protected static extern bool GetWindowInfo(IntPtr hWnd, ref WindowInfo pwi);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        static extern bool MoveWindow(IntPtr hWnd,  int X, int Y, int nWidth, int nHeight, bool bRepaint);
+
         public void SetWindowPositionAndSelect(IntPtr hwnd)
         {
-            ShowWindow(hwnd, SW_SHOWMAXIMIZED);
-            SetWindowPos(hwnd, FindWindow(null, this.Name), (int)this.ActualWidth, 0, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width - (int)this.ActualWidth, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height, SWP_NOSENDCHANGING);
-        }
-
-        public void MinimizeAllWindows()
-        {
-            foreach (var btn in _kioskButtons)
-            {
-                ShowWindow(btn.intPtr, SW_SHOWMINIMIZED);
-            }
+            ShowWindow(hwnd, SW_NORMAL);
+            MoveWindow(hwnd, (int)this.ActualWidth, 0, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width - (int)this.ActualWidth, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height, true);
+            BringWindowToTop(hwnd);
+            //SetWindowPos(hwnd, FindWindow(null, this.Name), (int)this.ActualWidth, 0, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width - (int)this.ActualWidth, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height, SWP_NOSENDCHANGING);
         }
 
         public virtual XElement ToXElement() 
@@ -91,13 +86,12 @@ namespace ApplicationKiosk
         private string _processName;
         private string _mainWindowHandle;
 
-        public ProcessButton(string processName, List<KioskButton> buttons) : base(buttons)
+        public ProcessButton(string processName)
         {
             _process = Process.GetProcessesByName(processName).FirstOrDefault();
 
             if (Process.GetProcessesByName(processName).Length > 1)
             {
-                this.MinimizeAllWindows();
                 MessageBoxResult messageBoxResult = MessageBox.Show($"Существует несколько процессов с именем {processName}.\nВвести имя окна, чтобы явно указать запускаемое приложение?", "Ошибка создания кнопки вызова процесса", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
                 if(messageBoxResult == MessageBoxResult.OK)
                 {
@@ -120,7 +114,7 @@ namespace ApplicationKiosk
 
             this.SpecificName = processName + _process.MainWindowTitle;
         }
-        public ProcessButton(string processName, string mainWindowHandle, string exeFilePath, List<KioskButton> buttons) : base(buttons)
+        public ProcessButton(string processName, string mainWindowHandle, string exeFilePath)
         {
             _exeFilePath = exeFilePath;
             _processName = processName;
@@ -158,7 +152,6 @@ namespace ApplicationKiosk
                 }
                 catch (InvalidOperationException exc)
                 {
-                    this.MinimizeAllWindows();
                     var result = MessageBox.Show(exc.Message+"\nХотите запустить приложение и попробовать снова?", "Ошибка", MessageBoxButton.YesNo, MessageBoxImage.Error);
 
                     if(result == MessageBoxResult.Yes)
@@ -205,7 +198,7 @@ namespace ApplicationKiosk
         private WindowInteropHelper _windowInteropHelper;
         private BrowserPage _browserPage;
         private Uri _adress;
-        public InternetPageButton(Uri adress, List<KioskButton> buttons) : base(buttons)
+        public InternetPageButton(Uri adress)
         {
             this.SpecificName = adress.ToString();
 
@@ -292,12 +285,12 @@ namespace ApplicationKiosk
                     KioskButton btn = null;
                     if (Uri.TryCreate(name.Value, UriKind.Absolute, out adress))
                     {
-                        btn = new InternetPageButton(adress, _createdButtons) { Content = caption.Value/*, WindowRect = Rect.Parse(rectParams)*/ };
+                        btn = new InternetPageButton(adress) { Content = caption.Value/*, WindowRect = Rect.Parse(rectParams)*/ };
                         _createdButtons.Add(btn);
                     }
                     else
                     {
-                        btn = new ProcessButton(name.Value, winCaption?.Value, exePath?.Value, _createdButtons) { Content = caption.Value/*, WindowRect = Rect.Parse(rectParams)*/ };
+                        btn = new ProcessButton(name.Value, winCaption?.Value, exePath?.Value) { Content = caption.Value/*, WindowRect = Rect.Parse(rectParams)*/ };
                         _createdButtons.Add(btn);
                     }
                     btn.MouseRightButtonDown += Btn_MouseRightButtonDown;
@@ -311,7 +304,6 @@ namespace ApplicationKiosk
             }
             catch (Exception exc)
             {
-                _createdButtons.FirstOrDefault()?.MinimizeAllWindows();
                 MessageBox.Show(exc.Message, "Ошибка инициализации", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
@@ -326,7 +318,6 @@ namespace ApplicationKiosk
         {
             base.OnClosed(e);
             this.Close();
-            _createdButtons.FirstOrDefault()?.MinimizeAllWindows();
             //_config.Save(_configPath);
         }
 
@@ -351,8 +342,7 @@ namespace ApplicationKiosk
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            ButtonInitDialog buttonInitDialog = new ButtonInitDialog(_createdButtons);
-            _createdButtons.FirstOrDefault()?.MinimizeAllWindows();
+            ButtonInitDialog buttonInitDialog = new ButtonInitDialog();
 
             buttonInitDialog.Show();
             buttonInitDialog.ButtonWasCreated += ButtonInitDialog_ButtonWasInit;
@@ -375,7 +365,6 @@ namespace ApplicationKiosk
             }
             catch (Exception exc)
             {
-                _createdButtons.FirstOrDefault()?.MinimizeAllWindows();
                 MessageBox.Show(exc.Message, "Ошибка инициализации", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

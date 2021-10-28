@@ -22,7 +22,6 @@ namespace ApplicationKiosk
 
         public event EventHandler ButtonWasCreated;
 
-        private List<KioskButton> _kioskButtons;
         private KioskButton _createdButton;
         public KioskButton CreatedButton
         {
@@ -30,18 +29,17 @@ namespace ApplicationKiosk
             {
                 Uri adress = null;
                 if (Uri.TryCreate(nameTextBox.Text, UriKind.Absolute, out adress))
-                    _createdButton = new InternetPageButton(adress, _kioskButtons) { Content = captionTextBox.Text };
+                    _createdButton = new InternetPageButton(adress) { Content = captionTextBox.Text };
                 else
-                    _createdButton = new ProcessButton(nameTextBox.Text, _kioskButtons) { Content = captionTextBox.Text };
+                    _createdButton = new ProcessButton(nameTextBox.Text) { Content = captionTextBox.Text };
                 return _createdButton;
 
             }
         }
 
-        public ButtonInitDialog(List<KioskButton> kioskButtons)
+        public ButtonInitDialog()
         {
             InitializeComponent();
-            _kioskButtons = kioskButtons;
             this.captionTextBox.Foreground = Brushes.Gray;
             this.nameTextBox.Foreground = Brushes.Gray;
             this.captionTextBox.GotFocus += CaptionTextBox_GotFocus;
