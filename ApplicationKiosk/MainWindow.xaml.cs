@@ -119,6 +119,7 @@ namespace ApplicationKiosk
 
             this.SpecificName = processName + _process.MainWindowTitle;
         }
+        
         public ProcessButton(string processName, string mainWindowHandle, string exeFilePath)
         {
             _exeFilePath = exeFilePath;
@@ -393,28 +394,46 @@ namespace ApplicationKiosk
             _config.Save(_configPath);
         }
 
-        //private void MainWindow_SourceInitialized(object sender, EventArgs e)
-        //{
-        //    WindowInteropHelper helper = new WindowInteropHelper(this);
-        //    HwndSource source = HwndSource.FromHwnd(helper.Handle);
-        //    source.AddHook(WndProc);
-        //}
+        private void Window_PreviewDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-        //private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        //{
-        //    switch (msg)
-        //    {
-        //        case WM_SYSCOMMAND:
-        //            int command = wParam.ToInt32() & 0xfff0;
-        //            if (command == SC_MOVE)
-        //            {
-        //                handled = true;
-        //            }
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //    return IntPtr.Zero;
-        //}
-    }
+                foreach (var file in files)
+                {
+                    var nameArr = file.Trim().Split(new char[] { '\\', '.' });
+
+                    var btn = new ProcessButton("", "", file) { Content = nameArr[nameArr.Length - 2]};
+                    _createdButtons.Add(btn);
+                    button_stack.Children.Add(btn);
+                    btn.MouseRightButtonDown += Btn_MouseRightButtonDown;
+                }
+            }
+        }
+
+    //private void MainWindow_SourceInitialized(object sender, EventArgs e)
+    //{
+    //    WindowInteropHelper helper = new WindowInteropHelper(this);
+    //    HwndSource source = HwndSource.FromHwnd(helper.Handle);
+    //    source.AddHook(WndProc);
+    //}
+
+    //private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+    //{
+    //    switch (msg)
+    //    {
+    //        case WM_SYSCOMMAND:
+    //            int command = wParam.ToInt32() & 0xfff0;
+    //            if (command == SC_MOVE)
+    //            {
+    //                handled = true;
+    //            }
+    //            break;
+    //        default:
+    //            break;
+    //    }
+    //    return IntPtr.Zero;
+    //}
+}
 }

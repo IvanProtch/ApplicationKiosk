@@ -4,7 +4,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Kiosk" Width="342.5" AllowDrop="False" FontSize="15" WindowStyle="None">
+        Title="Kiosk" Width="342.5" FontSize="15" WindowStyle="None"
+        AllowDrop="True" PreviewDrop="Window_PreviewDrop">
 
     <ScrollViewer VerticalScrollBarVisibility ="Auto" >
         <StackPanel>
