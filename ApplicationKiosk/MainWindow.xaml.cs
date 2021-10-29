@@ -70,21 +70,17 @@ namespace ApplicationKiosk
             //SetWindowPos(hwnd, FindWindow(null, this.Name), (int)this.ActualWidth, 0, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Width - (int)this.ActualWidth, System.Windows.Forms.Screen.PrimaryScreen.WorkingArea.Height, SWP_NOSENDCHANGING);
         }
 
-        private void MinimizeWindow()
-        {
-            ShowWindow(intPtr, SW_SHOWMINIMIZED);
-        }
-        ~KioskButton()
-        {
-            this.MinimizeWindow();
-        }
-
         public virtual XElement ToXElement() 
         {
             XElement xElement = new XElement("button");
             xElement.Add(new XAttribute("caption", Content.ToString()));
             //xElement.Add(new XAttribute("rectParams", WindowRect));
             return xElement;
+        }
+
+        public void CloseWindow()
+        {
+            ShowWindow(intPtr, SW_SHOWMINIMIZED);
         }
     }
 
@@ -262,7 +258,7 @@ namespace ApplicationKiosk
         private XDocument _config = new XDocument();
 
         private KioskButton _selectedButton;
-
+        private ButtonInitDialog _buttonInitDialog = new ButtonInitDialog();
 
         public MainWindow()
         {
@@ -331,6 +327,7 @@ namespace ApplicationKiosk
         {
             base.OnClosed(e);
             this.Close();
+            this._createdButtons.ForEach(btn => btn.CloseWindow());
             //_config.Save(_configPath);
         }
 
@@ -355,10 +352,8 @@ namespace ApplicationKiosk
 
         private void addButton_Click(object sender, RoutedEventArgs e)
         {
-            ButtonInitDialog buttonInitDialog = new ButtonInitDialog();
-
-            buttonInitDialog.Show();
-            buttonInitDialog.ButtonWasCreated += ButtonInitDialog_ButtonWasInit;
+            _buttonInitDialog.Show();
+            _buttonInitDialog.ButtonWasCreated += ButtonInitDialog_ButtonWasInit;
         }
 
         private void ButtonInitDialog_ButtonWasInit(object sender, EventArgs e)
